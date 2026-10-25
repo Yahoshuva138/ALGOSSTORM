@@ -39,7 +39,7 @@
         <button class="btn-google" id="googleSignInBtn" onclick="openAuthModal()">Sign In</button>
         
         <div class="user-profile-badge" id="userProfileBadge" onclick="handleProfileClick()" title="View Profile">
-          <img src="assets/logo.svg" id="userAvatarImg" class="user-avatar-img" alt="User Avatar">
+          <img src="assets/logo.svg" id="userAvatarImg" class="user-avatar-img" alt="User Avatar" referrerpolicy="no-referrer">
           <span class="user-name-text" id="userNameText">Coder</span>
         </div>
 
@@ -652,11 +652,13 @@ std::sort(intervals.begin(), intervals.end(), [](<span class="code-keyword">cons
       </div>
 
       <div id="g_id_onload"
-           data-client_id="YOUR_GOOGLE_CLIENT_ID"
+           data-client_id="621394500243-3p8v9uju8n17gf5jumlldv34gkp93ssu.apps.googleusercontent.com"
            data-callback="handleCredentialResponse"
            data-auto_prompt="false">
       </div>
-      <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black" data-text="signin_with" data-size="large"></div>
+      <div id="googleSignInBtnWrapper" style="display: flex; justify-content: center; margin: 12px 0;">
+        <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black" data-text="signin_with" data-size="large"></div>
+      </div>
     </div>
   </div>
 

@@ -3,6 +3,7 @@
 // ========================================================
 
 const AUTH_STORAGE_KEY = 'algosstorm_user_profile';
+const GOOGLE_CLIENT_ID = '621394500243-3p8v9uju8n17gf5jumlldv34gkp93ssu.apps.googleusercontent.com';
 
 let currentUser = null;
 
@@ -36,8 +37,15 @@ function updateAuthUI() {
     if (signInBtn) signInBtn.style.display = 'none';
     if (profileBadge) {
       profileBadge.style.display = 'inline-flex';
-      if (avatarImg) avatarImg.src = currentUser.avatar || 'assets/logo.svg';
-      if (nameText) nameText.textContent = currentUser.handle || currentUser.name || 'Coder';
+      if (avatarImg) {
+        avatarImg.onerror = () => {
+          avatarImg.src = 'assets/logo.svg';
+        };
+        avatarImg.src = currentUser.avatar || 'assets/logo.svg';
+      }
+      if (nameText) {
+        nameText.textContent = currentUser.handle || currentUser.name || 'Coder';
+      }
     }
   } else {
     if (signInBtn) signInBtn.style.display = 'inline-flex';
@@ -50,6 +58,7 @@ function openAuthModal() {
   if (modal) {
     modal.classList.add('open');
     if (typeof soundClick === 'function') soundClick();
+    initGoogleSignIn();
     const input = document.getElementById('cfHandleInput');
     if (input) setTimeout(() => input.focus(), 100);
   }
@@ -77,7 +86,8 @@ function handleProfileClick() {
   } catch (e) {}
 
   const confirmSignOut = confirm(
-    `Logged in as: ${currentUser.name || currentUser.handle} (${currentUser.handle || 'Guest'})\n` +
+    `Logged in as: ${currentUser.name || currentUser.handle} (${currentUser.handle || 'Google User'})\n` +
+    `Email: ${currentUser.email || 'N/A'}\n` +
     `Quests Solved: ${solvedCount}/21\n\n` +
     `Would you like to sign out or switch accounts?`
   );
@@ -107,7 +117,7 @@ function loginWithHandle(handle) {
   closeAuthModal();
   if (typeof soundSuccess === 'function') soundSuccess();
   if (typeof showToast === 'function') {
-    showToast(`Welcome back, ${clean}! ⚡ Profile connected.`);
+    showToast(`Welcome, ${clean}! ⚡ Codeforces profile linked.`);
   }
 }
 
@@ -119,12 +129,23 @@ function signOutUser() {
   if (typeof showToast === 'function') {
     showToast('Signed out successfully.');
   }
+
+  // Revoke Google session state if possible
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    try {
+      window.google.accounts.id.disableAutoSelect();
+    } catch (e) {}
+  }
 }
 
 // Google Identity Services (GIS) Callback
 window.handleCredentialResponse = function(response) {
   try {
-    // Decode JWT payload
+    if (!response || !response.credential) {
+      throw new Error('Missing credential in response');
+    }
+
+    // Decode JWT payload safely
     const base64Url = response.credential.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
@@ -136,10 +157,10 @@ window.handleCredentialResponse = function(response) {
     const data = JSON.parse(jsonPayload);
 
     const user = {
-      name: data.name,
-      email: data.email,
-      avatar: data.picture,
-      handle: data.name.split(' ')[0],
+      name: data.name || data.given_name || 'Google User',
+      email: data.email || '',
+      avatar: data.picture || 'assets/logo.svg',
+      handle: (data.given_name || data.name || 'User').split(' ')[0],
       isGuest: false,
       joinedAt: new Date().toISOString()
     };
@@ -148,15 +169,51 @@ window.handleCredentialResponse = function(response) {
     closeAuthModal();
     if (typeof soundSuccess === 'function') soundSuccess();
     if (typeof showToast === 'function') {
-      showToast(`Welcome, ${user.name}! 🍂`);
+      showToast(`Welcome back, ${user.name}! 🍂`);
     }
   } catch (e) {
     console.error('Google Sign-In Error:', e);
+    if (typeof showToast === 'function') {
+      showToast('Authentication failed. Please try again or use your Codeforces handle.');
+    }
   }
 };
 
+// Programmatic Google Sign-In Initialization & Button Rendering
+function initGoogleSignIn() {
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    try {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: window.handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      const wrapper = document.getElementById('googleSignInBtnWrapper');
+      if (wrapper && !wrapper.querySelector('iframe')) {
+        wrapper.innerHTML = '';
+        window.google.accounts.id.renderButton(wrapper, {
+          type: 'standard',
+          theme: 'filled_black',
+          size: 'large',
+          shape: 'pill',
+          text: 'signin_with',
+          width: 280
+        });
+      }
+    } catch (err) {
+      console.debug('GIS initialization note:', err);
+    }
+  } else {
+    // Retry if Google script is still asynchronously loading
+    setTimeout(initGoogleSignIn, 400);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadStoredUser();
+  initGoogleSignIn();
 
   // Attach event listeners
   const closeBtn = document.getElementById('closeAuthBtn');
