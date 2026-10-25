@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ALGOSSTORM Autumn Edition 2026 — 21-Day Codeforces Challenge presented by NLOGN SST. Prefix Sum, Difference Array, Constructive Algorithms, Greedy, and Maths.">
+  <meta name="theme-color" content="#07090e">
+  <title>ALGOSSTORM 🍂 Autumn Edition ⚡ | 21-Day Codeforces Quest</title>
+  
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- Autumn Storm Canvas & Atmospheric Lightning -->
+  <canvas id="stormCanvas"></canvas>
+  <div id="lightningFlash"></div>
+
+  <!-- Main Navigation Header -->
+  <header>
+    <div class="container nav-bar">
+      <div class="brand" onclick="switchView('overview')" role="button" tabindex="0">
+        <img src="assets/logo.svg" class="brand-icon" alt="ALGOSSTORM Logo">
+        <div class="brand-title">ALGOS<span class="grad">STORM</span> ⚡</div>
+        <span class="brand-tag">AUTUMN '26</span>
+      </div>
+
+      <nav class="nav-links" aria-label="Main Navigation">
+        <button class="nav-btn active" id="btnNavOverview" onclick="switchView('overview')">Overview</button>
+        <button class="nav-btn" id="btnNavRoadmap" onclick="switchView('roadmap')">21-Day Quest</button>
+        <button class="nav-btn" id="btnNavContests" onclick="switchView('contests')">Contest Radar</button>
+        <button class="nav-btn" id="btnNavArcade" onclick="switchView('arcade')">Arcade</button>
+        <button class="nav-btn" id="btnNavCodex" onclick="switchView('codex')">Codex</button>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn-google" id="googleSignInBtn" onclick="openAuthModal()">Sign In</button>
+        
+        <div class="user-profile-badge" id="userProfileBadge" onclick="handleProfileClick()" title="View Profile">
+          <img src="assets/logo.svg" id="userAvatarImg" class="user-avatar-img" alt="User Avatar">
+          <span class="user-name-text" id="userNameText">Coder</span>
+        </div>
+
+        <button class="icon-btn" id="soundToggle" title="Toggle Sound">🔊</button>
+        <button class="icon-btn" id="terminalToggle" title="Storm-Shell Terminal (~)">>_</button>
+        <a href="https://nlogn-sst.com/events" target="_blank" rel="noopener noreferrer" class="btn-glow">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- SPA Views Container -->
+  <main id="appContainer">
+    
+    <!-- ========================================== -->
+    <!-- VIEW 1: OVERVIEW                           -->
+    <!-- ========================================== -->
+    <section class="view-section active" id="viewOverview">
+      <div class="container">
+        <!-- Hero Header -->
+        <div class="hero-wrapper">
+          <div class="hero-pill">
+            <span class="pulse-dot"></span>
+            NLOGN — SST PRESENTS
+          </div>
+          <h1 class="hero-title">
+            ALGOS<span class="glow-storm">STORM</span> ⚡
+          </h1>
+          <p class="hero-subtitle">
+            Holidays are here, so why not make them a little more productive (and competitive 👀)?<br>
+            21-Day Challenge on Codeforces. Learn, solve, struggle a little, and see who can ride out the storm!
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn-glow" onclick="switchView('roadmap')">
+              ⚡ Enter 21-Day Quest
+            </button>
+            <button class="btn-cyan" onclick="switchView('arcade')">
+              🕹️ Algorithmic Arcade
+            </button>
+            <button class="btn-secondary" onclick="switchView('codex')">
+              📖 Knowledge Codex
+            </button>
+          </div>
+        </div>
+
+        <!-- 24-Hour Contest Countdown -->
+        <div class="countdown-box">
+          <div class="countdown-header">
+            <span class="countdown-title" id="nextContestTitle">
+              ⚡ NEXT: Contest 1: Prefix Sum & Diff Array
+            </span>
+            <span class="countdown-status-badge">24H CONTEST WINDOW</span>
+          </div>
+
+          <div class="countdown-grid">
+            <div class="timer-tile">
+              <div class="timer-val" id="timerDays">00</div>
+              <div class="timer-label">Days</div>
+            </div>
+            <div class="timer-tile">
+              <div class="timer-val" id="timerHours">00</div>
+              <div class="timer-label">Hours</div>
+            </div>
+            <div class="timer-tile">
+              <div class="timer-val" id="timerMins">00</div>
+              <div class="timer-label">Minutes</div>
+            </div>
+            <div class="timer-tile">
+              <div class="timer-val" id="timerSecs">00</div>
+              <div class="timer-label">Seconds</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Strip -->
+        <div class="stats-strip">
+          <div class="stat-card">
+            <div class="stat-icon icon-autumn">📅</div>
+            <div class="stat-info">
+              <span class="stat-number">21 Days</span>
+              <span class="stat-desc">Daily Quest Ladder</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-blue">⚡</div>
+            <div class="stat-info">
+              <span class="stat-number">4 Contests</span>
+              <span class="stat-desc">24h Timed Windows</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-purple">🎯</div>
+            <div class="stat-info">
+              <span class="stat-number">5 Topics</span>
+              <span class="stat-desc">Prefix, Diff, Greedy, Math</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-cyan">🏆</div>
+            <div class="stat-info">
+              <span class="stat-number" id="heroSolvedCounter">0/21</span>
+              <span class="stat-desc">Your Quests Solved</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Core Topics Showcase -->
+        <div class="topics-showcase">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">🍂 Curriculum Topics Breakdown</h2>
+              <p class="section-subtitle">Curated to build competitive algorithmic intuition on Codeforces</p>
+            </div>
+            <button class="btn-secondary" onclick="switchView('codex')">Explore Full Codex →</button>
+          </div>
+
+          <div class="topics-grid">
+            <div class="topic-tile" onclick="switchView('codex')">
+              <div class="topic-tile-head">
+                <span class="topic-icon">📊</span>
+                <span class="topic-name">Prefix Sum</span>
+              </div>
+              <p class="topic-desc">1D & 2D range sum queries in O(1) time after O(N) precomputation. Eliminates repeated nested loops.</p>
+            </div>
+
+            <div class="topic-tile" onclick="switchView('codex')">
+              <div class="topic-tile-head">
+                <span class="topic-icon">⚡</span>
+                <span class="topic-name">Difference Array</span>
+              </div>
+              <p class="topic-desc">Perform range addition updates [L..R] in O(1) time. Reconstruct the array with a single prefix pass.</p>
+            </div>
+
+            <div class="topic-tile" onclick="switchView('codex')">
+              <div class="topic-tile-head">
+                <span class="topic-icon">🧩</span>
+                <span class="topic-name">Constructive</span>
+              </div>
+              <p class="topic-desc">Discover parity invariants, extreme elements, and build solutions satisfying tight constraints.</p>
+            </div>
+
+            <div class="topic-tile" onclick="switchView('codex')">
+              <div class="topic-tile-head">
+                <span class="topic-icon">🪙</span>
+                <span class="topic-name">Greedy</span>
+              </div>
+              <p class="topic-desc">Optimal locally-chosen decisions that lead to globally optimal results. Interval scheduling & sorting.</p>
+            </div>
+
+            <div class="topic-tile" onclick="switchView('codex')">
+              <div class="topic-tile-head">
+                <span class="topic-icon">📐</span>
+                <span class="topic-name">Maths</span>
+              </div>
+              <p class="topic-desc">Modular arithmetic, Euclidean GCD, prime factorization, Fermat's Little Theorem, and combinatorial logic.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Handbooks Included In Workspace -->
+        <div class="topics-showcase">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">📚 Official Study Handbooks</h2>
+              <p class="section-subtitle">Readily available offline textbooks bundled directly in your ALGOSSTORM workspace</p>
+            </div>
+          </div>
+
+          <div class="handbooks-row">
+            <div class="handbook-card">
+              <div>
+                <h4 class="handbook-title">Competitive Programmer's Handbook</h4>
+                <p class="handbook-desc">By Antti Laaksonen. Comprehensive guide covering standard algorithms, data structures, and math.</p>
+              </div>
+              <a href="CPH.pdf" target="_blank" class="btn-secondary" style="font-size: 0.82rem; justify-content: center;">
+                📖 Read CPH.pdf
+              </a>
+            </div>
+
+            <div class="handbook-card">
+              <div>
+                <h4 class="handbook-title">Principles of Algorithmic Problem Solving</h4>
+                <p class="handbook-desc">In-depth mathematical foundations, proofs of correctness, and algorithmic reasoning techniques.</p>
+              </div>
+              <a href="PAPS.pdf" target="_blank" class="btn-secondary" style="font-size: 0.82rem; justify-content: center;">
+                📖 Read PAPS.pdf
+              </a>
+            </div>
+
+            <div class="handbook-card">
+              <div>
+                <h4 class="handbook-title">C++ STL & Reference Manual</h4>
+                <p class="handbook-desc">Fast I/O, vector, deque, priority_queue, policy-based data structures, and STL tricks for CP.</p>
+              </div>
+              <a href="cpp.pdf" target="_blank" class="btn-secondary" style="font-size: 0.82rem; justify-content: center;">
+                📖 Read cpp.pdf
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: 21-DAY QUEST ROADMAP               -->
+    <!-- ========================================== -->
+    <section class="view-section" id="viewRoadmap">
+      <div class="container">
+        
+        <!-- HUD Summary Card -->
+        <div class="roadmap-hud">
+          <div class="hud-progress-block">
+            <div class="hud-progress-header">
+              <span>Overall Quest Progress</span>
+              <span class="hud-rank-badge" id="hudRankBadge">🌱 Storm Initiate</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="hudProgressBar"></div>
+            </div>
+          </div>
+
+          <div class="hud-stats-group">
+            <div class="hud-stat-item">
+              <div class="hud-stat-val" id="hudSolvedCount">0/21</div>
+              <div class="hud-stat-lbl">Quests Done</div>
+            </div>
+            <div class="hud-stat-item">
+              <div class="hud-stat-val" id="hudPctText">0% Complete</div>
+              <div class="hud-stat-lbl">Completion</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter and Search Bar -->
+        <div class="filter-bar">
+          <div class="filter-pills">
+            <button class="filter-pill active" data-topic="All">All Topics</button>
+            <button class="filter-pill" data-topic="Prefix Sum">Prefix Sum</button>
+            <button class="filter-pill" data-topic="Difference Array">Diff Array</button>
+            <button class="filter-pill" data-topic="Constructive">Constructive</button>
+            <button class="filter-pill" data-topic="Greedy">Greedy</button>
+            <button class="filter-pill" data-topic="Maths">Maths</button>
+          </div>
+
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="questSearchInput" placeholder="Search problem or rating...">
+          </div>
+        </div>
+
+        <!-- Quest Cards Grid -->
+        <div class="quest-grid" id="questGrid">
+          <!-- Dynamically populated by js/roadmap.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 3: CONTEST RADAR                      -->
+    <!-- ========================================== -->
+    <section class="view-section" id="viewContests">
+      <div class="container">
+        
+        <div class="hero-wrapper" style="padding-top: 1rem;">
+          <h2 class="hero-title">⚡ Contest <span class="glow-storm">Radar</span></h2>
+          <p class="hero-subtitle">
+            Four milestone contests on Codeforces. Each round opens for a full 24-hour window, followed by post-contest discussions and problem editorials!
+          </p>
+        </div>
+
+        <div class="contest-timeline">
+          <!-- Contest 1 -->
+          <div class="contest-card highlight">
+            <div class="contest-date-col">
+              <div class="date-box">
+                <div class="date-day">27</div>
+                <div class="date-month">OCT</div>
+              </div>
+              <div class="contest-detail-col">
+                <span class="contest-header-badge">CONTEST #1 · 24-HOUR OPEN WINDOW</span>
+                <h3 class="contest-name">Prefix Sum & Difference Array Surge</h3>
+                <p class="contest-meta-desc">Range query mastery, 2D prefix grids, and cumulative range updates.</p>
+              </div>
+            </div>
+            <div class="contest-action-col">
+              <a href="https://codeforces.com/contests" target="_blank" rel="noopener noreferrer" class="btn-glow">
+                Enter Codeforces
+              </a>
+            </div>
+          </div>
+
+          <!-- Contest 2 -->
+          <div class="contest-card">
+            <div class="contest-date-col">
+              <div class="date-box">
+                <div class="date-day">01</div>
+                <div class="date-month">NOV</div>
+              </div>
+              <div class="contest-detail-col">
+                <span class="contest-header-badge">CONTEST #2 · 24-HOUR OPEN WINDOW</span>
+                <h3 class="contest-name">Constructive Logic & Invariance</h3>
+                <p class="contest-meta-desc">Parity checks, edge-case constructions, and mathematical game-play invariants.</p>
+              </div>
+            </div>
+            <div class="contest-action-col">
+              <a href="https://codeforces.com/contests" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                View Schedule
+              </a>
+            </div>
+          </div>
+
+          <!-- Contest 3 -->
+          <div class="contest-card">
+            <div class="contest-date-col">
+              <div class="date-box">
+                <div class="date-day">06</div>
+                <div class="date-month">NOV</div>
+              </div>
+              <div class="contest-detail-col">
+                <span class="contest-header-badge">CONTEST #3 · 24-HOUR OPEN WINDOW</span>
+                <h3 class="contest-name">Greedy Strategies & Sorting Invariance</h3>
+                <p class="contest-meta-desc">Interval scheduling, exchange argument proofs, and greedy rearrangements.</p>
+              </div>
+            </div>
+            <div class="contest-action-col">
+              <a href="https://codeforces.com/contests" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                View Schedule
+              </a>
+            </div>
+          </div>
+
+          <!-- Contest 4 -->
+          <div class="contest-card">
+            <div class="contest-date-col">
+              <div class="date-box">
+                <div class="date-day">12</div>
+                <div class="date-month">NOV</div>
+              </div>
+              <div class="contest-detail-col">
+                <span class="contest-header-badge">CONTEST #4 · 24-HOUR OPEN WINDOW</span>
+                <h3 class="contest-name">Grand Storm Finale: Maths & Mixed</h3>
+                <p class="contest-meta-desc">Comprehensive final showdown combining all five core problem categories.</p>
+              </div>
+            </div>
+            <div class="contest-action-col">
+              <a href="https://codeforces.com/contests" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                View Schedule
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contest Rules -->
+        <div class="radar-rules-box">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff;">📜 Contest Regulations & Format</h3>
+          <div class="rules-grid">
+            <div class="rule-item">
+              <div class="rule-icon">⏱️</div>
+              <div>
+                <h4 class="rule-title">24-Hour Flexible Window</h4>
+                <p class="rule-text">Start anytime during the 24-hour contest period. Perfect for managing holiday schedules.</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-icon">💬</div>
+              <div>
+                <h4 class="rule-title">Post-Contest Editorial</h4>
+                <p class="rule-text">Official solution discussion and code walk-through held directly following each round.</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-icon">🛡️</div>
+              <div>
+                <h4 class="rule-title">Integrity & Fairness</h4>
+                <p class="rule-text">Independent submissions only. Plagiarism detection tools are enforced on Codeforces.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 4: ARCADE                             -->
+    <!-- ========================================== -->
+    <section class="view-section" id="viewArcade">
+      <div class="container">
+        
+        <div class="hero-wrapper" style="padding-top: 1rem;">
+          <h2 class="hero-title">🕹️ Algorithmic <span class="glow-storm">Arcade</span></h2>
+          <p class="hero-subtitle">
+            Train your competitive programming reflexes! Solve rapid mental math, difference array queries, and greedy interval puzzles.
+          </p>
+        </div>
+
+        <div class="arcade-cabinet">
+          <!-- Game Select Tabs -->
+          <div class="arcade-nav">
+            <button class="arcade-tab active" data-game="prefix">Prefix Blitz</button>
+            <button class="arcade-tab" data-game="diff">Difference Drift</button>
+            <button class="arcade-tab" data-game="parity">Parity Storm</button>
+            <button class="arcade-tab" data-game="greedy">Greedy Snatcher</button>
+          </div>
+
+          <!-- Arena Stage -->
+          <div class="arcade-arena">
+            <div class="arcade-hud-row">
+              <div class="arcade-score" id="arcadeScoreVal">0 pts</div>
+              <div class="arcade-timer-bar">
+                <div class="arcade-timer-fill" id="arcadeTimerFill"></div>
+              </div>
+              <div class="arcade-streak" id="arcadeStreakVal">Combo: 0x</div>
+            </div>
+
+            <!-- Active Gameplay Board -->
+            <div class="arcade-board" id="arcadeBoard">
+              <div class="arcade-prompt" id="arcadePrompt">Ready?</div>
+              <div class="array-tiles" id="arcadeTiles"></div>
+              <div id="arcadeControls"></div>
+            </div>
+
+            <!-- Start / Game Over Overlay -->
+            <div class="arcade-overlay" id="arcadeOverlay">
+              <h3 id="overlayTitle" style="font-size: 1.8rem; font-weight: 900; color: #fff;">PREFIX SUM BLITZ</h3>
+              <p id="overlayDesc" style="color: var(--text-secondary); max-width: 480px; font-size: 0.95rem; line-height: 1.5;">
+                Calculate range sums using mental prefix subtraction before the timer runs out!
+              </p>
+              <button class="btn-glow" id="arcadeStartBtn" style="font-size: 1.05rem; padding: 0.8rem 2rem;">
+                ▶ START CHALLENGE
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 5: CODEX                              -->
+    <!-- ========================================== -->
+    <section class="view-section" id="viewCodex">
+      <div class="container">
+        
+        <div class="hero-wrapper" style="padding-top: 1rem;">
+          <h2 class="hero-title">📖 Algorithmic <span class="glow-storm">Codex</span></h2>
+          <p class="hero-subtitle">
+            Cheat sheets, mathematical invariants, and production C++ code snippets for all five core curriculum topics.
+          </p>
+        </div>
+
+        <div class="codex-grid">
+          <!-- Sidebar Navigation -->
+          <aside class="codex-nav-card">
+            <a href="#codexPrefix" class="codex-link active">1. Prefix Sums (1D & 2D)</a>
+            <a href="#codexDiff" class="codex-link">2. Difference Arrays</a>
+            <a href="#codexConstructive" class="codex-link">3. Constructive Algorithms</a>
+            <a href="#codexGreedy" class="codex-link">4. Greedy Techniques</a>
+            <a href="#codexMaths" class="codex-link">5. Number Theory & Maths</a>
+          </aside>
+
+          <!-- Main Codex Articles -->
+          <div class="codex-content-area">
+            
+            <!-- Article 1: Prefix Sum -->
+            <article class="codex-topic-card" id="codexPrefix">
+              <h3>📊 1. Prefix Sums (1D & 2D)</h3>
+              <p>
+                A prefix sum array transforms queries about the sum of contiguous subarrays into constant time $O(1)$ operations after an initial $O(N)$ preprocessing pass.
+              </p>
+              <div class="code-block">
+<span class="code-keyword">#include</span> &lt;vector&gt;
+<span class="code-comment">// Precomputing 1D Prefix Sums (1-indexed)</span>
+std::vector&lt;<span class="code-keyword">long long</span>&gt; pref(n + 1, 0);
+<span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = 1; i &lt;= n; ++i) {
+    pref[i] = pref[i - 1] + a[i];
+}
+<span class="code-comment">// Query sum in range [L, R] in O(1):</span>
+<span class="code-keyword">long long</span> range_sum = pref[R] - pref[L - 1];
+              </div>
+              <p>
+                <strong>2D Grid Prefix Formula:</strong><br>
+                <code>pref[r][c] = grid[r][c] + pref[r-1][c] + pref[r][c-1] - pref[r-1][c-1]</code><br>
+                <strong>Sub-rectangle sum $(r_1, c_1)$ to $(r_2, c_2)$:</strong><br>
+                <code>sum = pref[r2][c2] - pref[r1-1][c2] - pref[r2][c1-1] + pref[r1-1][c1-1]</code>
+              </p>
+            </article>
+
+            <!-- Article 2: Difference Array -->
+            <article class="codex-topic-card" id="codexDiff">
+              <h3>⚡ 2. Difference Array (Range Updates)</h3>
+              <p>
+                When given multiple queries to add value $x$ to every element in index range $[L..R]$, doing so naively is $O(Q \times N)$. With a difference array, each update is $O(1)$, and the final array is reconstructed with one prefix sum pass in $O(N)$.
+              </p>
+              <div class="code-block">
+<span class="code-comment">// Add 'val' to all elements in range [L, R] (1-indexed)</span>
+diff[L] += val;
+diff[R + 1] -= val;
+
+<span class="code-comment">// Reconstruct final array:</span>
+<span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = 1; i &lt;= n; ++i) {
+    diff[i] += diff[i - 1];
+    arr[i] += diff[i];
+}
+              </div>
+            </article>
+
+            <!-- Article 3: Constructive -->
+            <article class="codex-topic-card" id="codexConstructive">
+              <h3>🧩 3. Constructive Algorithms & Invariants</h3>
+              <p>
+                Constructive problems do not ask for a single number; they ask you to construct a sequence, grid, or graph satisfying given properties. Key strategies:
+              </p>
+              <ul style="margin-left: 1.5rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                <li><strong>Analyze Small Cases ($N=1, 2, 3, 4$):</strong> Write down all valid outputs by hand to find recurring patterns.</li>
+                <li><strong>Parity Invariants:</strong> Check sum of elements, count of odd vs even numbers, and invertibility under XOR.</li>
+                <li><strong>Extremal Principle:</strong> Look at minimum or maximum values ($1$, $N$, or infinity) and place them first.</li>
+              </ul>
+            </article>
+
+            <!-- Article 4: Greedy -->
+            <article class="codex-topic-card" id="codexGreedy">
+              <h3>🪙 4. Greedy Techniques</h3>
+              <p>
+                A greedy algorithm works only when a locally optimal choice is guaranteed to lead to a globally optimal solution. Always prove greedy choice via the <em>Exchange Argument</em>:
+              </p>
+              <div class="code-block">
+<span class="code-comment">// Interval Scheduling: sort by earliest finish time</span>
+std::sort(intervals.begin(), intervals.end(), [](<span class="code-keyword">const auto</span>& a, <span class="code-keyword">const auto</span>& b) {
+    <span class="code-keyword">return</span> a.end_time &lt; b.end_time;
+});
+              </div>
+            </article>
+
+            <!-- Article 5: Maths -->
+            <article class="codex-topic-card" id="codexMaths">
+              <h3>📐 5. Number Theory & Modular Arithmetic</h3>
+              <p>
+                Competitive programming frequently requires computation modulo $10^9 + 7$ or $998244353$. Division under modulo requires the modular multiplicative inverse using Fermat's Little Theorem ($a^{P-2} \equiv a^{-1} \pmod P$ when $P$ is prime).
+              </p>
+              <div class="code-block">
+<span class="code-keyword">long long</span> power(<span class="code-keyword">long long</span> base, <span class="code-keyword">long long</span> exp) {
+    <span class="code-keyword">long long</span> res = 1;
+    base %= MOD;
+    <span class="code-keyword">while</span> (exp &gt; 0) {
+        <span class="code-keyword">if</span> (exp &amp; 1) res = (res * base) % MOD;
+        base = (base * base) % MOD;
+        exp &gt;&gt;= 1;
+    }
+    <span class="code-keyword">return</span> res;
+}
+<span class="code-keyword">long long</span> modInverse(<span class="code-keyword">long long</span> n) {
+    <span class="code-keyword">return</span> power(n, MOD - 2);
+}
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-nav" aria-label="Mobile Navigation">
+    <button class="mobile-nav-btn active" data-view="overview">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="roadmap">
+      <span class="icon">⚡</span>
+      <span>Quest</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="contests">
+      <span class="icon">📅</span>
+      <span>Radar</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="arcade">
+      <span class="icon">🕹️</span>
+      <span>Arcade</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="codex">
+      <span class="icon">📖</span>
+      <span>Codex</span>
+    </button>
+  </nav>
+
+  <!-- Auth & Handle Linker Modal -->
+  <div class="auth-modal-backdrop" id="authModal">
+    <div class="auth-modal-card">
+      <button class="auth-modal-close" id="closeAuthBtn" aria-label="Close Auth Modal">✕</button>
+      <h3 class="auth-modal-title">Sign In / Link Handle</h3>
+      <p class="auth-modal-desc">Connect your Codeforces handle to track your 21-Day progress.</p>
+
+      <div class="auth-input-group">
+        <label class="auth-label" for="cfHandleInput">Codeforces Handle</label>
+        <input type="text" id="cfHandleInput" class="auth-input" placeholder="e.g. tourist">
+      </div>
+
+      <button class="btn-glow" id="saveHandleBtn" style="width: 100%; justify-content: center;">
+        ⚡ Save & Connect
+      </button>
+
+      <div class="auth-divider">
+        <span>OR SIGN IN WITH GOOGLE</span>
+      </div>
+
+      <div id="g_id_onload"
+           data-client_id="YOUR_GOOGLE_CLIENT_ID"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black" data-text="signin_with" data-size="large"></div>
+    </div>
+  </div>
+
+  <!-- Storm-Shell Terminal CLI Modal -->
+  <div class="terminal-modal-backdrop" id="terminalModal">
+    <div class="terminal-window">
+      <div class="terminal-titlebar">
+        <div class="terminal-dots">
+          <div class="terminal-dot dot-red" id="closeTerminalBtn" title="Close"></div>
+          <div class="terminal-dot dot-yellow"></div>
+          <div class="terminal-dot dot-green"></div>
+        </div>
+        <div class="terminal-title">Storm-Shell CLI (v1.0.4) ~ Press Esc to exit</div>
+        <div style="width: 48px;"></div>
+      </div>
+
+      <div class="terminal-body" id="terminalBody">
+        <div class="term-line term-info">
+          ⚡ Welcome to Storm-Shell! Type <code>help</code> for available commands.
+        </div>
+      </div>
+
+      <div class="terminal-input-row">
+        <span class="term-prompt">user@algosstorm:~$</span>
+        <input type="text" class="terminal-cli-input" id="terminalCliInput" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modular Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/roadmap.js"></script>
+  <script src="js/arcade.js"></script>
+  <script src="js/terminal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
